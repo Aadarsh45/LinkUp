@@ -57,7 +57,7 @@ class add_post : AppCompatActivity() {
                     .addOnSuccessListener { document ->
                         val user = document.toObject<User>()
                         if (user != null && Url != null) {
-                            var post = Post(Url!!,binding.caption.text.toString(),user.imageurl.toString(),userId.toString(),System.currentTimeMillis().toString())
+                            var post = Post(Url!!,binding.caption.text.toString(),user.imageurl.toString(),System.currentTimeMillis().toString(),userId.toString(),0, mutableListOf())
 
                             FirebaseFirestore.getInstance().collection(POST).document().set(post)
                                 .addOnSuccessListener {

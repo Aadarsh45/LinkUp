@@ -4,15 +4,18 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.instademo.R
 import com.example.instademo.databinding.ItemPostBinding
 import com.example.instademo.model.Post
 import com.example.instademo.model.User
-
-
+import com.example.instademo.utils.POST
 import com.example.instademo.utils.USER_NODE
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -22,7 +25,40 @@ class PostAdapter(
     private val postList: ArrayList<Post>
 ) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val likeButton: ImageView = itemView.findViewById(R.id.like_button)
+        private val likesCount: TextView = itemView.findViewById(R.id.likes_count)
+
+        fun bind(post: Post) {
+            likesCount.text = "${post.likesCount} likes"
+            likeButton.setImageResource(if (post.likedBy.contains(Firebase.auth.currentUser?.uid)) R.drawable.ic_liked else R.drawable.ic_like)
+
+            likeButton.setOnClickListener {
+                val currentUserId = Firebase.auth.currentUser?.uid ?: return@setOnClickListener
+                val newLikesCount = if (post.likedBy.contains(currentUserId)) {
+                    // User has already liked the post, remove their like
+                    post.likedBy.remove(currentUserId) // This should be correct if likedBy is a MutableList
+                    post.likesCount - 1
+                } else {
+                    // User hasn't liked the post, add their like
+                    post.likedBy.add(currentUserId)
+                    post.likesCount + 1
+                }
+
+                // Update Firestore
+                Firebase.firestore.collection(POST).document()
+                    .update("likesCount", newLikesCount, "likedBy", post.likedBy)
+                    .addOnSuccessListener {
+                        // Update the UI
+                        likesCount.text = "$newLikesCount likes"
+                        likeButton.setImageResource(if (post.likedBy.contains(currentUserId)) R.drawable.ic_liked else R.drawable.ic_like)
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(context, "Error updating likes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -36,13 +72,12 @@ class PostAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = postList[position]
 
-        // Note : post.uid is time and post.time  is uid there is a error is valid
         if (post.uid!!.isNotEmpty()) {
             // Fetch user details from Firestore
-            Firebase.firestore.collection(USER_NODE).document(post.time!!).get()
+            Firebase.firestore.collection(USER_NODE).document(post.uid!!).get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
-                        val user= documentSnapshot.toObject<User>()
+                        val user = documentSnapshot.toObject<User>()
                         user?.let {
                             // Load user profile image using Glide
                             Glide.with(context)
@@ -52,7 +87,7 @@ class PostAdapter(
                                 .into(holder.binding.imageViewProfile)
 
                             // Set username
-                            holder.binding.textViewUsername.text =user.name
+                            holder.binding.textViewUsername.text = user.name
                         } ?: run {
                             // Handle case where user object is null
                             Log.w("PostAdapter", "User object is null for UID: ${post.uid}")
@@ -82,6 +117,8 @@ class PostAdapter(
             .error(R.drawable.ic_error) // Error image
             .into(holder.binding.imageViewPost)
         holder.binding.textViewCaption.text = post.caption
+
+        holder.bind(post)
     }
 
     private fun handleError(holder: ViewHolder) {

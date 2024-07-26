@@ -5,22 +5,40 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <queries>
+        <!-- Email apps -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+
+        <!-- Browsers (for GitHub link) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <application
         android:name=".Instademo"
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:logo="@drawable/icon"
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaDemo"
-        tools:targetApi="31"
-        android:logo="@drawable/icon">
-
+        tools:targetApi="31">
+        <activity
+            android:name=".Aboutus"
+            android:exported="false" />
         <activity
             android:name=".post.add_post"
             android:exported="false" />
@@ -30,7 +48,7 @@
         <activity
             android:name=".HomeActivity"
             android:exported="true"
-            android:label="@string/title_activity_home"></activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".signUp"
             android:exported="false" />

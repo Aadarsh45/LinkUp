@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:id="@+id/rv_home_post"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:foregroundTint="#641818"
     tools:context=".fragment.HomeFragment">
-
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar12"
@@ -16,23 +14,24 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:theme="@style/Base.Theme.InstaDemo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialToolbar12">
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbar12"
+        app:layout_constraintBottom_toTopOf="@+id/view">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
@@ -54,10 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#920E0E"
-
                 android:src="@drawable/ic_pen"
                 app:layout_constraintBottom_toBottomOf="@+id/user_image"
-                app:layout_constraintEnd_toEndOf="@+id/user_image" />
+                app:layout_constraintEnd_toEndOf="@+id/user_image"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/follow_rv"
@@ -69,9 +67,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/user_image"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-
+                app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -83,18 +79,18 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
+        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv9"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/rv9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toBottomOf="@+id/view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
