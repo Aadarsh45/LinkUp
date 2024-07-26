@@ -1,4 +1,3 @@
-
 package com.example.instademo.adapter
 
 import android.content.Context
@@ -11,12 +10,10 @@ import com.example.instademo.databinding.ReelDgBinding
 import com.example.instademo.model.Reel
 import com.squareup.picasso.Picasso
 
-class ReelAdapter(var context: Context, var reelList:ArrayList<Reel>) :
+class ReelAdapter(var context: Context, var reelList: ArrayList<Reel>) :
     RecyclerView.Adapter<ReelAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ReelDgBinding) : RecyclerView.ViewHolder(binding.root) {
-        // You can add view references and binding logic here if needed
-    }
+    inner class ViewHolder(val binding: ReelDgBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ReelDgBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,15 +21,31 @@ class ReelAdapter(var context: Context, var reelList:ArrayList<Reel>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Picasso.get().load(reelList.get(position).profile).placeholder(R.drawable.ic_person).into(holder.binding.profileImage)
+        var reel = reelList.get(position)
 
-        holder.binding.tv1.setText(reelList.get(position).caption)
-        holder.binding.videoView.setVideoPath(reelList.get(position).videoUrl)
+        // Load profile image with error handling
 
-        holder.binding.videoView.setOnPreparedListener{
+            Picasso.get().load(reel.profile)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_error) // Placeholder for errors
+                .into(holder.binding.profileImage)
+
+
+        holder.binding.tv1.text = reel.caption
+
+        // Show progress bar while video is loading
+        holder.binding.progressBar.visibility = View.VISIBLE
+
+        holder.binding.videoView.setVideoPath(reel.videoUrl)
+        holder.binding.videoView.setOnPreparedListener {
             holder.binding.progressBar.visibility = View.GONE
             holder.binding.videoView.start()
+        }
 
+        // Reset video state when view is recycled
+        holder.binding.videoView.setOnCompletionListener {
+            holder.binding.progressBar.visibility = View.VISIBLE
+            holder.binding.videoView.stopPlayback()
         }
     }
 

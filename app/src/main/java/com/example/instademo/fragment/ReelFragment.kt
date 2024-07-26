@@ -5,15 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.instademo.adapter.ReelAdapter
 import com.example.instademo.databinding.FragmentReelBinding
 import com.example.instademo.model.Reel
+import com.example.instademo.utils.REEL
+import com.example.instademo.utils.REEL_FOLDER
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
-
 
 class ReelFragment : Fragment() {
 
@@ -37,24 +41,41 @@ class ReelFragment : Fragment() {
         binding.viewPager1.orientation = ViewPager2.ORIENTATION_VERTICAL
         binding.viewPager1.adapter = adapter
 
+        // Set up page change listener for preloading
+        binding.viewPager1.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // Preload when reaching second to last item
+                    fetchReels()
+
+            }
+        })
+
+        // Show loading indicator initially
+        binding.progressBar.isVisible = true
+
         fetchReels()
     }
 
     private fun fetchReels() {
-        Firebase.firestore.collection(REEL_COLLECTION).get()
-            .addOnSuccessListener { documents ->
+        Firebase.firestore.collection("Reel").get()
+            .addOnSuccessListener{ documents ->
                 val tempList = ArrayList<Reel>()
-                reelList.clear()
                 for (document in documents) {
                     val reel = document.toObject<Reel>()
                     tempList.add(reel)
                 }
                 reelList.addAll(tempList)
                 reelList.reverse()
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRangeInserted(reelList.size - tempList.size, tempList.size)
+
+                // Hide loading indicator and show empty state if needed
+                binding.progressBar.isVisible = false
+                binding.emptyState.isVisible = reelList.isEmpty()
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Failed to load reels", Toast.LENGTH_SHORT).show()
+                binding.progressBar.isVisible = false
             }
     }
 
@@ -64,6 +85,6 @@ class ReelFragment : Fragment() {
     }
 
     companion object {
-        const val REEL_COLLECTION = "reels"
+
     }
 }

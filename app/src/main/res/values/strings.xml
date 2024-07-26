@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">InstaDemo</string>
-    <string name="instademo">InstaDemo</string>
+    <string name="app_name">LinkUp</string>
+    <string name="instademo">LinkUp</string>
 
     <!-- string for showing the text "Forgot your login details-->
     <string name="forgot"><font color='c4c4c4'>Forgot your login details? </font><b>Get help logging in.</b></string>

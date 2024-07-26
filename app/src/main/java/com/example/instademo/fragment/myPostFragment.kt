@@ -25,6 +25,7 @@ class myPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMyPostBinding.inflate(inflater, container, false)
+
         val postList = ArrayList<Post>()
         val adapter = MyPostRvAdapter(requireContext(), postList)
 

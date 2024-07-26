@@ -12,6 +12,7 @@ import com.example.instademo.model.Reel
 import com.example.instademo.model.User
 import com.example.instademo.utils.REEL
 import com.example.instademo.utils.REEL_FOLDER
+import com.example.instademo.utils.USER_NODE
 import com.example.instademo.utils.uploadVideo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -61,19 +62,10 @@ class add_reels : AppCompatActivity() {
         }
 
         binding.post1.setOnClickListener {
-            var user: User =User()
-            Firebase.firestore.collection("USER").document(FirebaseAuth.getInstance().currentUser!!.uid).get()
-                .addOnSuccessListener {
-                    user=it.toObject<User>()!!
-                }
-
-
             val videoUrl = videourl
             val caption = binding.caption1.text.toString()
 
-
-            if (videoUrl.isNullOrEmpty()) {
-                showMessage("Please select a video")
+            if (videoUrl.isNullOrEmpty()) {showMessage("Please select a video")
                 return@setOnClickListener
             }
             if (caption.isEmpty()) {
@@ -81,11 +73,15 @@ class add_reels : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val reel = Reel()
-            reel.profile = user.imageurl
-            reel.videoUrl = videoUrl
-            reel.caption = caption
-            saveReelToFirestore(reel)
+            Firebase.firestore.collection(USER_NODE).document(FirebaseAuth.getInstance().currentUser!!.uid).get()
+                .addOnSuccessListener { documentSnapshot ->
+
+                    val user = documentSnapshot.toObject<com.example.instademo.model.User>()!!
+                    val reel = Reel(videoUrl, caption, user.imageurl)
+                    saveReelToFirestore(reel)
+                }
+                .addOnFailureListener { e ->showMessage("Failed to get user data: ${e.message}")
+                }
         }
     }
 
@@ -95,7 +91,6 @@ class add_reels : AppCompatActivity() {
                 FirebaseFirestore.getInstance().collection(FirebaseAuth.getInstance().currentUser!!.uid + REEL)
                     .document().set(reel)
                     .addOnSuccessListener {
-//                        showMessage("Reel posted successfully ${reel.videoUrl}")
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }

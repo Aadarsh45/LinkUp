@@ -105,6 +105,7 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
+
     implementation ("androidx.appcompat:appcompat:1.2.0")
     implementation ("androidx.fragment:fragment:1.3.2")
     implementation ("androidx.recyclerview:recyclerview:1.2.0")

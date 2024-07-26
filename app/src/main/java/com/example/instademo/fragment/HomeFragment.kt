@@ -44,6 +44,8 @@ class HomeFragment : Fragment() {
         adapter = PostAdapter(requireContext(), postList)
         binding.rv9.layoutManager = LinearLayoutManager(requireContext())
         binding.rv9.adapter = adapter
+
+        fetchPosts()
         followRvAdapter = FollowRvAdapter(requireContext(),followList)
         binding.followRv.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         binding.followRv.adapter = followRvAdapter
@@ -65,7 +67,7 @@ class HomeFragment : Fragment() {
             }
 
         // Fetch posts from Firestore
-        fetchPosts()
+
 
         return binding.root
     }
