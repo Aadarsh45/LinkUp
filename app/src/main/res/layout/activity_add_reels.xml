@@ -70,6 +70,7 @@ tools:context=".post.add_reels">
             android:id="@+id/share"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_share"
+            android:backgroundTint="@color/white"
 
             />
 
@@ -95,10 +96,11 @@ tools:context=".post.add_reels">
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:layout_margin="16dp"
+            android:layout_marginEnd="40dp"
 
             app:strokeColor="#EF0A65"
             android:textColor="@color/black"
@@ -108,13 +110,12 @@ tools:context=".post.add_reels">
             />
 
         <Button
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="@string/post"
-            android:layout_margin="16dp"
             android:id="@+id/post1"
-            />
-</LinearLayout>
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/post" />
+    </LinearLayout>
 
 
 

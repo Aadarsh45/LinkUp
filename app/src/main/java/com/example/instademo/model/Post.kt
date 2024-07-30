@@ -4,12 +4,13 @@ class Post{
     var post:String?=""
     var caption:String?=""
     var profileImageUrl: String?=""
-    var uid: String?=""
+    var uid: String?=""      //uid = userid
 //    var isLiked: Boolean=false
     var time:String?=""
 
     var likesCount: Int = 0
     var likedBy: MutableList<String> = mutableListOf()
+    var id:String?=""
 
     constructor()
     constructor(post:String,caption:String){
@@ -17,7 +18,7 @@ class Post{
         this.caption=caption
     }
     constructor(post: String
-    , caption: String, profileImageUrl: String, time: String, uid: String, likesCount: Int, likedBy: MutableList<String>) {
+    , caption: String, profileImageUrl: String, time: String, uid: String, likesCount: Int, likedBy: MutableList<String>,id:String) {
         this.post = post
         this.caption = caption
         this.profileImageUrl = profileImageUrl
@@ -25,6 +26,8 @@ class Post{
         this.time = time
         this.likesCount = likesCount
         this.likedBy = likedBy
+        this.id = id
+
     }
 
 }

@@ -17,7 +17,7 @@ import com.example.instademo.utils.POST
 import com.example.instademo.utils.USER_NODE
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 
 class PostAdapter(
@@ -35,27 +35,30 @@ class PostAdapter(
 
             likeButton.setOnClickListener {
                 val currentUserId = Firebase.auth.currentUser?.uid ?: return@setOnClickListener
-                val newLikesCount = if (post.likedBy.contains(currentUserId)) {
+                val newLikesCount: Int
+                if (post.likedBy.contains(currentUserId)) {
                     // User has already liked the post, remove their like
-                    post.likedBy.remove(currentUserId) // This should be correct if likedBy is a MutableList
-                    post.likesCount - 1
+                    post.likedBy.remove(currentUserId)
+                    newLikesCount = post.likesCount - 1
                 } else {
                     // User hasn't liked the post, add their like
                     post.likedBy.add(currentUserId)
-                    post.likesCount + 1
+                    newLikesCount = post.likesCount + 1
                 }
 
                 // Update Firestore
-                Firebase.firestore.collection(POST).document()
-                    .update("likesCount", newLikesCount, "likedBy", post.likedBy)
-                    .addOnSuccessListener {
-                        // Update the UI
-                        likesCount.text = "$newLikesCount likes"
-                        likeButton.setImageResource(if (post.likedBy.contains(currentUserId)) R.drawable.ic_liked else R.drawable.ic_like)
-                    }
-                    .addOnFailureListener { exception ->
-                        Toast.makeText(context, "Error updating likes: ${exception.message}", Toast.LENGTH_SHORT).show()
-                    }
+                val postRef = Firebase.firestore.collection(POST).document(post.id!!)
+                Firebase.firestore.runTransaction { transaction ->
+                    transaction.update(postRef, "likesCount", newLikesCount)
+                    transaction.update(postRef, "likedBy", post.likedBy)
+                }.addOnSuccessListener {
+                    // Update the UI
+                    likesCount.text = "$newLikesCount likes"
+                    likeButton.setImageResource(if (post.likedBy.contains(currentUserId)) R.drawable.ic_liked else R.drawable.ic_like)
+                    notifyDataSetChanged()
+                }.addOnFailureListener { exception ->
+                    Toast.makeText(context, "Error updating likes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

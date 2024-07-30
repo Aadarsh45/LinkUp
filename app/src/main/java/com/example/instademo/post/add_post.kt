@@ -26,7 +26,7 @@ class add_post : AppCompatActivity() {
             uploadImage(it, POST_FOLDER) { url ->
                 if (url != null) {
                     binding.imageSelect.setImageURI(uri)
-                   Url = url
+                    Url = url
                 }
             }
         }
@@ -57,11 +57,12 @@ class add_post : AppCompatActivity() {
                     .addOnSuccessListener { document ->
                         val user = document.toObject<User>()
                         if (user != null && Url != null) {
-                            var post = Post(Url!!,binding.caption.text.toString(),user.imageurl.toString(),System.currentTimeMillis().toString(),userId.toString(),0, mutableListOf())
+                            val postId = FirebaseFirestore.getInstance().collection(POST).document().id
+                            var post = Post(Url!!,binding.caption.text.toString(),user.imageurl.toString(),System.currentTimeMillis().toString(),userId.toString(),0, mutableListOf(), postId)
 
-                            FirebaseFirestore.getInstance().collection(POST).document().set(post)
+                            FirebaseFirestore.getInstance().collection(POST).document(postId).set(post)
                                 .addOnSuccessListener {
-                                    FirebaseFirestore.getInstance().collection(userId).document().set(post)
+                                    FirebaseFirestore.getInstance().collection(userId).document(postId).set(post)
                                         .addOnSuccessListener {
                                             startActivity(Intent(this, HomeActivity::class.java))
                                             finish()

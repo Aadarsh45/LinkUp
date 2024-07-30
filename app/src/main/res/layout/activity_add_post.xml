@@ -55,6 +55,7 @@
             android:id="@+id/sharetoPost"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_share"
+            android:backgroundTint="@color/background_color"
 
             />
 
