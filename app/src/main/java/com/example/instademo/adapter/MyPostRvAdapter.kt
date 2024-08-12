@@ -16,8 +16,7 @@ class MyPostRvAdapter(
 
     inner class ViewHolder(val binding: MyPostDesignRvBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: String) {
-            // Bind data to your views here, e.g.,
-            // binding.textViewPost.text = post
+
         }
     }
 

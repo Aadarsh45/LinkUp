@@ -25,7 +25,7 @@ class ReelAdapter(var context: Context, var reelList: ArrayList<Reel>) :
 
         // Load profile image with error handling
 
-            Picasso.get().load(reel.profile)
+        Picasso.get().load(reel.profile)
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_error) // Placeholder for errors
                 .into(holder.binding.profileImage)

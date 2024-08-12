@@ -30,6 +30,7 @@ class PostAdapter(
         private val likesCount: TextView = itemView.findViewById(R.id.likes_count)
 
         fun bind(post: Post) {
+
             likesCount.text = "${post.likesCount} likes"
             likeButton.setImageResource(if (post.likedBy.contains(Firebase.auth.currentUser?.uid)) R.drawable.ic_liked else R.drawable.ic_like)
 
@@ -45,6 +46,7 @@ class PostAdapter(
                     post.likedBy.add(currentUserId)
                     newLikesCount = post.likesCount + 1
                 }
+
 
                 // Update Firestore
                 val postRef = Firebase.firestore.collection(POST).document(post.id!!)

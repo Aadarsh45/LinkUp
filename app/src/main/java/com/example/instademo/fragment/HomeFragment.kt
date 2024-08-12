@@ -112,9 +112,11 @@ class HomeFragment : Fragment() {
             // Fetch follows
             Firebase.firestore.collection(currentUser.uid + FOLLOW).get()
                 .addOnSuccessListener { documents ->
+                    followList.clear()
                     val tempList = ArrayList<User>()
                     for (document in documents.documents) {
                         val user = document.toObject<User>()!!
+
                         tempList.add(user)
                     }
                     followList.addAll(tempList)
