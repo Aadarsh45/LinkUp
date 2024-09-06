@@ -132,12 +132,19 @@ class HomeFragment : Fragment() {
 
 
     private fun fetchPosts() {
-        Firebase.firestore.collection(POST).get()
+        val currentTime = System.currentTimeMillis()
+
+        Firebase.firestore.collection(POST)
+            .get()
             .addOnSuccessListener { documents ->
                 postList.clear()
                 for (document in documents) {
                     val post = document.toObject<Post>()
-                    postList.add(post)
+
+                    // Check if the post is scheduled for a future time
+                    if (post.scheduledTime == null || post.scheduledTime!! <= currentTime) {
+                        postList.add(post)
+                    }
                 }
                 postAdapter.notifyDataSetChanged()
             }
@@ -145,6 +152,7 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error fetching posts: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
 }

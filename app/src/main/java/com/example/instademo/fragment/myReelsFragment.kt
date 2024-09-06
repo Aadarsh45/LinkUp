@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.instademo.R
 import com.example.instademo.adapter.MyReelRvAdapter
-import com.example.instademo.databinding.FragmentMyPostBinding
 import com.example.instademo.databinding.FragmentMyReelsBinding
 import com.example.instademo.model.Reel
 import com.example.instademo.utils.REEL

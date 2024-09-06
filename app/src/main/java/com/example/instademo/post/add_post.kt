@@ -1,30 +1,36 @@
 package com.example.instademo.post
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.instademo.HomeActivity
 import com.example.instademo.databinding.ActivityAddPostBinding
 import com.example.instademo.model.Post
 import com.example.instademo.model.User
-import com.example.instademo.utils.*
+import com.example.instademo.utils.POST
+import com.example.instademo.utils.POST_FOLDER
+import com.example.instademo.utils.USER_NODE
+import com.example.instademo.utils.uploadImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import java.util.*
 
 class add_post : AppCompatActivity() {
-    private lateinit var binding: ActivityAddPostBinding  // View binding for accessing views
+    private lateinit var binding: ActivityAddPostBinding
+    private var Url: String? = null
+    private var scheduledTime: Long? = null  // Variable to store the scheduled time
 
-    private var Url: String? = null  // Variable to store the URL of the uploaded image
     private val launcher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        // Handle the result of image selection
         uri?.let {
             uploadImage(it, POST_FOLDER) { url ->
-                // Upload the image and get the URL
                 if (url != null) {
-                    binding.imageSelect.setImageURI(uri)  // Display the selected image
-                    Url = url  // Store the URL
+                    binding.imageSelect.setImageURI(uri)
+                    Url = url
                 }
             }
         }
@@ -33,105 +39,112 @@ class add_post : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityAddPostBinding.inflate(layoutInflater)  // Inflate the layout
-        setContentView(binding.root)  // Set the content view to the binding's root
+        binding = ActivityAddPostBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar4)  // Set the custom toolbar
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)  // Enable the back button
-        supportActionBar?.setDisplayShowHomeEnabled(true)  // Show the home button
+        setSupportActionBar(binding.toolbar4)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        // Set the navigation click listener to go back to HomeActivity
         binding.toolbar4.setNavigationOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
 
-        // Set the click listener for the image selection button
         binding.imageSelect.setOnClickListener {
-            launcher.launch("image/*")  // Launch the image selection intent
+            launcher.launch("image/*")
         }
 
-        // Set the click listener for the post button
+        // Show date and time pickers when the user clicks on the date or time fields
+        binding.scheduleDate.setOnClickListener {
+            showDatePicker()
+        }
+
+        binding.scheduleTime.setOnClickListener {
+            showTimePicker()
+        }
+
         binding.post.setOnClickListener {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid  // Get the current user ID
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
             if (userId != null) {
-                // Retrieve the user details from Firestore
                 FirebaseFirestore.getInstance().collection(USER_NODE).document(userId).get()
                     .addOnSuccessListener { document ->
-                        val user = document.toObject<User>()  // Convert document to User object
+                        val user = document.toObject<User>()
                         if (user != null && Url != null) {
-                            // Create a new post object
                             val postId = FirebaseFirestore.getInstance().collection(POST).document().id
+
+                            // If scheduledTime is not set, use the current time
+                            val postTime = scheduledTime ?: System.currentTimeMillis()
+
                             val post = Post(
-                                Url!!,
-                                binding.caption.text.toString(),
-                                user.imageurl.toString(),
-                                System.currentTimeMillis().toString(),
-                                userId,
-                                0,
-                                mutableListOf(),
-                                postId
+                                post = Url!!,
+                                caption = binding.caption.text.toString(),
+                                profileImageUrl = user.imageurl.toString(),
+                                time = postTime.toString(),
+                                uid = userId,
+                                likesCount = 0,
+                                likedBy = mutableListOf(),
+                                id = postId,
+                                scheduledTime = scheduledTime // Save the scheduled time (could be null)
                             )
 
-                            // Save the post to Firestore
                             FirebaseFirestore.getInstance().collection(POST).document(postId).set(post)
                                 .addOnSuccessListener {
-                                    // Save the post under the user's collection
-                                    FirebaseFirestore.getInstance().collection(userId).document(postId).set(post)
-                                        .addOnSuccessListener {
-                                            startActivity(Intent(this, HomeActivity::class.java))
-                                            finish()  // Finish the current activity
-                                        }
-                                        .addOnFailureListener { e ->
-                                            // Handle the failure
-                                            e.printStackTrace()
-                                        }
+                                    Toast.makeText(this, "Post created successfully!", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                    finish()
                                 }
                                 .addOnFailureListener { e ->
-                                    // Handle the failure
-                                    e.printStackTrace()
+                                    Toast.makeText(this, "Failed to create post: ${e.message}", Toast.LENGTH_SHORT).show()
                                 }
+                        } else {
+                            Toast.makeText(this, "Please select an image and enter a caption.", Toast.LENGTH_SHORT).show()
                         }
                     }
                     .addOnFailureListener { e ->
-                        // Handle the failure
-                        e.printStackTrace()
+                        Toast.makeText(this, "Failed to get user data: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
             }
         }
 
-        // Set the click listener for the cancel button
         binding.cancel.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
-            finish()  // Finish the current activity
+            finish()
         }
+    }
 
+    // Function to show date picker dialog
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, year, monthOfYear, dayOfMonth ->
+                calendar.set(year, monthOfYear, dayOfMonth)
+                binding.scheduleDate.setText("$dayOfMonth/${monthOfYear + 1}/$year")
+                // After selecting date, prompt for time
+                showTimePicker(calendar)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
+    }
 
-
-
-
-        //Firestore Root
-        //├── Users (Collection)
-        //│   ├── {userId} (Document)
-        //│   │   ├── name: String
-        //│   │   ├── imageurl: String
-        //│   │   ├── email: String
-        //│   │   └── other user details...
-        //│   └── ...
-        //├── Posts (Collection)
-        //│   ├── {postId} (Document)
-        //│   │   ├── imageUrl: String
-        //│   │   ├── caption: String
-        //│   │   ├── userImageUrl: String
-        //│   │   ├── timestamp: String
-        //│   │   ├── userId: String
-        //│   │   ├── likes: Int
-        //│   │   ├── likedBy: List<String> (List of userIds who liked the post)
-        //│   │   ├── postId: String
-        //│   └── ...
-        //├── {userId} (Collection for user's own posts)
-        //│   ├── {postId} (Document)
-        //│   │   ├── (Post data similar to Posts collection)
-        //│   └── ...
+    // Function to show time picker dialog
+    private fun showTimePicker(calendar: Calendar = Calendar.getInstance()) {
+        val timePickerDialog = TimePickerDialog(
+            this,
+            { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                scheduledTime = calendar.timeInMillis
+                binding.scheduleTime.setText(String.format("%02d:%02d", hourOfDay, minute))
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        )
+        timePickerDialog.show()
     }
 }

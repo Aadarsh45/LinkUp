@@ -24,5 +24,6 @@
     <string name="play_pause">Play_Pause</string>
     <string name="unknown_user">No name</string>
     <string name="follow">Follow</string>
+    <string name="HomeActivity">LinkUp</string>
     <string name="About_me">Hello! I\'m Aadarsh Chaurasia, a fourth-year B.Tech student specializing in Computer Science and Engineering at JSS Academy of Technical Education, NOIDA. I have a passion for Android development and have worked on several projects utilizing Kotlin, XML, and various development tools. </string>
 </resources>

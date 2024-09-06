@@ -16,8 +16,10 @@ import com.example.instademo.model.User
 import com.example.instademo.utils.POST
 import com.example.instademo.utils.USER_NODE
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class PostAdapter(
@@ -25,14 +27,17 @@ class PostAdapter(
     private val postList: ArrayList<Post>
 ) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
+    private val firestore = Firebase.firestore
+    private val userCollection = firestore.collection(USER_NODE)
+    private val postCollection = firestore.collection(POST)
+    private val postListeners = mutableMapOf<String, ListenerRegistration>()
+
     inner class ViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val likeButton: ImageView = itemView.findViewById(R.id.like_button)
-        private val likesCount: TextView = itemView.findViewById(R.id.likes_count)
+        private val likeButton: ImageView = binding.likeButton
+        private val likesCount: TextView = binding.likesCount
 
         fun bind(post: Post) {
-
-            likesCount.text = "${post.likesCount} likes"
-            likeButton.setImageResource(if (post.likedBy.contains(Firebase.auth.currentUser?.uid)) R.drawable.ic_liked else R.drawable.ic_like)
+            updateLikeUI(post)
 
             likeButton.setOnClickListener {
                 val currentUserId = Firebase.auth.currentUser?.uid ?: return@setOnClickListener
@@ -47,21 +52,22 @@ class PostAdapter(
                     newLikesCount = post.likesCount + 1
                 }
 
-
                 // Update Firestore
-                val postRef = Firebase.firestore.collection(POST).document(post.id!!)
-                Firebase.firestore.runTransaction { transaction ->
+                val postRef = postCollection.document(post.id!!)
+                firestore.runTransaction { transaction ->
                     transaction.update(postRef, "likesCount", newLikesCount)
                     transaction.update(postRef, "likedBy", post.likedBy)
                 }.addOnSuccessListener {
-                    // Update the UI
-                    likesCount.text = "$newLikesCount likes"
-                    likeButton.setImageResource(if (post.likedBy.contains(currentUserId)) R.drawable.ic_liked else R.drawable.ic_like)
-                    notifyDataSetChanged()
+                    // No need to update UI here as snapshot listener will handle it
                 }.addOnFailureListener { exception ->
                     Toast.makeText(context, "Error updating likes: ${exception.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        private fun updateLikeUI(post: Post) {
+            likesCount.text = "${post.likesCount} likes"
+            likeButton.setImageResource(if (post.likedBy.contains(Firebase.auth.currentUser?.uid)) R.drawable.ic_liked else R.drawable.ic_like)
         }
     }
 
@@ -72,14 +78,31 @@ class PostAdapter(
 
     override fun getItemCount(): Int {
         return postList.size
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = postList[position]
 
+        // Attach a Firestore listener for real-time updates
+        postListeners[post.id!!] = postCollection.document(post.id!!).addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("PostAdapter", "Error listening to post changes", error)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val updatedPost = snapshot.toObject<Post>()
+                updatedPost?.let {
+                    postList[position] = it // Update postList with the new data
+                    holder.bind(it) // Bind updated data to the view holder
+                }
+            }
+        }
+
+        // Fetch user details from Firestore
         if (post.uid!!.isNotEmpty()) {
-            // Fetch user details from Firestore
-            Firebase.firestore.collection(USER_NODE).document(post.uid!!).get()
+            userCollection.document(post.uid!!).get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         val user = documentSnapshot.toObject<User>()
@@ -94,24 +117,17 @@ class PostAdapter(
                             // Set username
                             holder.binding.textViewUsername.text = user.name
                         } ?: run {
-                            // Handle case where user object is null
-                            Log.w("PostAdapter", "User object is null for UID: ${post.uid}")
                             handleError(holder)
                         }
                     } else {
-                        // Handle case where user document is not found
-                        Log.w("PostAdapter", "User document not found for UID: ${post.uid}")
                         handleError(holder)
                     }
                 }
                 .addOnFailureListener { exception ->
-                    // Handle any errors during data fetching
-                    Log.e("PostAdapter", "Error fetching user details for UID: ${post.uid}", exception)
                     handleError(holder)
+                    Log.e("PostAdapter", "Error fetching user details for UID: ${post.uid}", exception)
                 }
         } else {
-            // Handle case where post.uid is invalid
-            Log.w("PostAdapter", "Invalid UID for post: $post")
             handleError(holder)
         }
 
@@ -126,9 +142,78 @@ class PostAdapter(
         holder.bind(post)
     }
 
+
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        val post = postList[position]
+//
+//        // Attach a Firestore listener for real-time updates
+//        postListeners[post.id!!] = postCollection.document(post.id!!).addSnapshotListener { snapshot, error ->
+//            if (error != null) {
+//                Log.e("PostAdapter", "Error listening to post changes", error)
+//                return@addSnapshotListener
+//            }
+//
+//            if (snapshot != null && snapshot.exists()) {
+//                val updatedPost = snapshot.toObject<Post>()
+//                updatedPost?.let {
+//                    postList[position] = it // Update postList with the new data
+//                    holder.bind(it) // Bind updated data to the view holder
+//                }
+//            }
+//        }
+//
+//        // Fetch user details from Firestore
+//        if (post.uid!!.isNotEmpty()) {
+//            userCollection.document(post.uid!!).get()
+//                .addOnSuccessListener { documentSnapshot ->
+//                    if (documentSnapshot.exists()) {
+//                        val user = documentSnapshot.toObject<User>()
+//                        user?.let {
+//                            // Load user profile image using Glide
+//                            Glide.with(context)
+//                                .load(user.imageurl)
+//                                .placeholder(R.drawable.icon) // Placeholder image
+//                                .error(R.drawable.ic_error) // Error image
+//                                .into(holder.binding.imageViewProfile)
+//
+//                            // Set username
+//                            holder.binding.textViewUsername.text = user.name
+//                        } ?: run {
+//                            handleError(holder)
+//                        }
+//                    } else {
+//                        handleError(holder)
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    handleError(holder)
+//                    Log.e("PostAdapter", "Error fetching user details for UID: ${post.uid}", exception)
+//                }
+//        } else {
+//            handleError(holder)
+//        }
+//
+//        // Load post image and set caption using Glide
+//        Glide.with(context)
+//            .load(post.post)
+//            .placeholder(R.drawable.placeholder) // Placeholder image
+//            .error(R.drawable.ic_error) // Error image
+//            .into(holder.binding.imageViewPost)
+//        holder.binding.textViewCaption.text = post.caption
+//
+//        holder.bind(post)
+//    }
+
     private fun handleError(holder: ViewHolder) {
-        // Set default values for username and profile image in case of errors
         holder.binding.textViewUsername.text = context.getString(R.string.unknown_user)
         Glide.with(context).load(R.drawable.icon).into(holder.binding.imageViewProfile)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        // Clean up listeners when the adapter is detached
+        for (listener in postListeners.values) {
+            listener.remove()
+        }
     }
 }

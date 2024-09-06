@@ -28,6 +28,12 @@ class signIn : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        // Check if user is already logged in
+        if (auth.currentUser != null) {
+            // User is already logged in, navigate to HomeActivity
+            navigateToHome()
+        }
+
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -56,9 +62,7 @@ class signIn : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "User logged in", Toast.LENGTH_LONG).show()
-                            val intent = Intent(this, HomeActivity::class.java)
-                            startActivity(intent)
-                            finish()
+                            navigateToHome()
                         } else {
                             Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show()
                         }
@@ -93,9 +97,7 @@ class signIn : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "User logged in with Google", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    navigateToHome()
                 } else {
                     Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_LONG).show()
                 }
@@ -107,7 +109,7 @@ class signIn : AppCompatActivity() {
         val userEmail = account.email
         val userPhotoUrl = account.photoUrl?.toString()
 
-        // You can save this data to your database or pass it to another activity
+        // Save this data to your database or pass it to another activity
         saveUserDataToFirestore(userName, userEmail, userPhotoUrl)
     }
 
@@ -131,5 +133,11 @@ class signIn : AppCompatActivity() {
                     Toast.makeText(this, "Failed to save user data", Toast.LENGTH_LONG).show()
                 }
         }
+    }
+
+    private fun navigateToHome() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

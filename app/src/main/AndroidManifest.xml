@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <queries>
         <!-- Email apps -->
         <intent>
@@ -24,46 +25,55 @@
     </queries>
 
     <application
-        android:name=".Instademo"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:logo="@drawable/icon"
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaDemo"
         tools:targetApi="31">
+
+        <activity
+            android:name=".Instademo"
+            android:exported="true" />
+
         <activity
             android:name=".Aboutus"
             android:exported="false" />
+
         <activity
             android:name=".post.add_post"
             android:exported="false" />
+
         <activity
             android:name=".post.add_reels"
             android:exported="false" />
+
         <activity
             android:name=".HomeActivity"
             android:exported="true"
-            android:label="@string/title_activity_home" />
+            android:label="@string/app_name" />
+
         <activity
             android:name=".signUp"
             android:exported="false" />
+
         <activity
             android:name=".signIn"
-            android:exported="false" />
-        <activity
-            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SplashScreen"
+            android:exported="false" />
     </application>
 
 </manifest>
