@@ -51,13 +51,13 @@ Here are some screenshots of the PhotoShareApp:
 <p align="center">
   <img src="/pic2.png" width="200" alt="Search Feature " >
   <br>
-  <small>Reel Feature - Browse short videos</small>
+  <small>Search Feature</small>
 </p>
 
 <p align="center">
   <img src="/pic3.png" width="200" alt="Schedule Post" >
   <br>
-  <small>Profile Page - Manage your profile</small>
+  <small>Schedule Post</small>
 </p>
 ## Installation
 
