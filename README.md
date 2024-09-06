@@ -40,16 +40,24 @@
 
 ## Screenshots
 
-Include some screenshots of your app here.
+Here are some screenshots of the PhotoShareApp:
 
 <p align="center">
-  <img src="/pic1.png" width="200" >
+  <img src="/pic1.png" width="200" alt="Home Feed - View your feed of posts" >
+  <br>
+  <small>Home Feed - View your feed of posts</small>
 </p>
+
 <p align="center">
-  <img src="/pic2.png" width="200" >
+  <img src="/pic2.png" width="200" alt="Search Feature " >
+  <br>
+  <small>Reel Feature - Browse short videos</small>
 </p>
+
 <p align="center">
-  <img src="/pic3.png" width="200" >
+  <img src="/pic3.png" width="200" alt="Schedule Post" >
+  <br>
+  <small>Profile Page - Manage your profile</small>
 </p>
 ## Installation
 
