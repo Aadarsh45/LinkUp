@@ -13,7 +13,7 @@
 
 ## Introduction
 
-**PhotoShareApp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, PhotoShareApp ensures smooth social engagement.
+**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, PhotoShareApp ensures smooth social engagement.
 
 ## Features
 
@@ -66,7 +66,7 @@ Step-by-step instructions to set up the PhotoShareApp.
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/PhotoShareApp.git
+    git clone https://github.com/Aadarsh45/LinkUp.git
     ```
 
 2. **Open the project in Android Studio.**
@@ -82,7 +82,7 @@ Step-by-step instructions to set up the PhotoShareApp.
 
 Instructions for using the app:
 
-1. Open the PhotoShareApp on your device.
+1. Open the =App on your device.
 2. Create and share posts with photos or short videos.
 3. Interact with posts by liking or commenting.
 4. Explore the reel feature for short video content.
@@ -122,4 +122,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any questions or suggestions, feel free to reach out at [your-email@example.com](mailto:your-email@example.com).
+For any questions or suggestions, feel free to reach out at [your-email@example.com](mailto:aadarshchaurasia45@gmail.com).
