@@ -13,7 +13,7 @@
 
 ## Introduction
 
-**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, PhotoShareApp ensures smooth social engagement.
+**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, This ensures smooth social engagement.
 
 ## Features
 
