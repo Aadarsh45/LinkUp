@@ -51,13 +51,13 @@
 
 Here are some screenshots of the **LinkUp** app:
 
-| Home Feed | Search Feature | Schedule Post |
+|    |  |  |
 |:---------:|:--------------:|:-------------:|
-| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Schedule Post](./pic4.png) |
+| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Follow List](./pic4.png) |
 
-| Profile Page | Full-Screen Post | Delete Post |
+| |   |  |
 |:------------:|:----------------:|:------------:|
-| ![Profile](./pic3.png) | ![Full-Screen](./pic5.png) | ![Delete Post](./pic6.png) |
+| ![Schedule Post](./pic4.png) | ![Reel](./Screenshot_20240907_015104.png) | ![Delete And Share Post](./pic6.png) |
 
 ## Installation
 
