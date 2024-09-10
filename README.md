@@ -13,14 +13,14 @@
 
 ## Introduction
 
-**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, This ensures smooth social engagement.
+**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, LinkUp ensures smooth social engagement.
 
 ## Features
 
 - 📸 **Post Creation**  
   Users can upload photos with captions, which are stored in Firebase Storage and displayed in a real-time feed.
 
-- 🧵 **Reel Feature**  
+- 🎥 **Reel Feature**  
   Users can upload short videos that are showcased in the reels section for interactive content browsing.
 
 - 🔄 **Real-Time Feed**  
@@ -35,33 +35,33 @@
 - ➕ **Follow System**  
   Users can follow/unfollow others to customize their feeds.
 
+- 🖼️ **Full-Screen Post View**  
+  Users can view posts in full-screen mode by tapping on the post image.
+
+- 📤 **Share Post**  
+  Users can share posts to other platforms or directly with friends.
+
+- 🗑️ **Delete Post**  
+  Users can delete their own posts from their feed or profile.
+
 - 📱 **Responsive Design**  
   The UI is designed for a smooth and intuitive experience across various screen sizes.
 
 ## Screenshots
 
-Here are some screenshots of the PhotoShareApp:
+Here are some screenshots of the **LinkUp** app:
 
-<p align="center">
-  <img src="/pic1.png" width="200" alt="Home Feed - View your feed of posts" >
-  <br>
-  <small>Home Feed - View your feed of posts</small>
-</p>
+| Home Feed | Search Feature | Schedule Post |
+|:---------:|:--------------:|:-------------:|
+| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Schedule Post](./pic4.png) |
 
-<p align="center">
-  <img src="/pic2.png" width="200" alt="Search Feature " >
-  <br>
-  <small>Search Feature</small>
-</p>
+| Profile Page | Full-Screen Post | Delete Post |
+|:------------:|:----------------:|:------------:|
+| ![Profile](./pic3.png) | ![Full-Screen](./pic5.png) | ![Delete Post](./pic6.png) |
 
-<p align="center">
-  <img src="/pic3.png" width="200" alt="Schedule Post" >
-  <br>
-  <small>Schedule Post</small>
-</p>
 ## Installation
 
-Step-by-step instructions to set up the PhotoShareApp.
+Step-by-step instructions to set up the **LinkUp** app:
 
 1. **Clone the repository:**
 
@@ -82,11 +82,13 @@ Step-by-step instructions to set up the PhotoShareApp.
 
 Instructions for using the app:
 
-1. Open the =App on your device.
+1. Open the **LinkUp** app on your device.
 2. Create and share posts with photos or short videos.
 3. Interact with posts by liking or commenting.
-4. Explore the reel feature for short video content.
-5. Edit your profile, follow other users, and customize your feed.
+4. View posts in full-screen mode by tapping on the post image.
+5. Share posts with others or delete your own posts.
+6. Explore the reel feature for short video content.
+7. Edit your profile, follow other users, and customize your feed.
 
 ## Contributing
 
