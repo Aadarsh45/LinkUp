@@ -46,7 +46,7 @@ class fullscreenmediaActivity : AppCompatActivity() {
 
     private fun loadImage(imageUrl: String) {
         imageView.visibility = View.VISIBLE
-        Toast.makeText(this, "Image Link: $imageUrl", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "Image Link: $imageUrl", Toast.LENGTH_SHORT).show()
 
         // Load image using Glide
         Glide.with(this)
