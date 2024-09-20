@@ -7,6 +7,7 @@
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Firebase Integration](#firebase-integration)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -89,6 +90,61 @@ Instructions for using the app:
 5. Share posts with others or delete your own posts.
 6. Explore the reel feature for short video content.
 7. Edit your profile, follow other users, and customize your feed.
+
+## Firebase Integration
+
+### **Firebase Authentication**
+
+```kotlin
+// Firebase Authentication for User Login
+val auth = FirebaseAuth.getInstance()
+
+fun loginUser(email: String, password: String) {
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("Login", "Login successful")
+            } else {
+                Log.d("Login", "Login failed: ${task.exception?.message}")
+            }
+        }
+}
+```
+### Firebase Firestore Setup
+```
+// Firestore Database for Storing Posts
+val db = FirebaseFirestore.getInstance()
+
+fun addPost(post: Post) {
+    db.collection("posts")
+        .add(post)
+        .addOnSuccessListener { documentReference ->
+            Log.d("Firestore", "Post added with ID: ${documentReference.id}")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error adding post", e)
+        }
+}
+
+```
+### Firebase Storage for Image Upload
+```
+// Uploading Image to Firebase Storage
+val storageRef = FirebaseStorage.getInstance().reference.child("posts/${UUID.randomUUID()}.jpg")
+
+fun uploadImage(fileUri: Uri) {
+    storageRef.putFile(fileUri)
+        .addOnSuccessListener {
+            Log.d("Storage", "Image upload successful")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Storage", "Image upload failed", e)
+        }
+}
+
+```
+
+
 
 ## Contributing
 
