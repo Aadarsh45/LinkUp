@@ -77,7 +77,7 @@ class ProfileFragment : Fragment() {
                         val user = task.result?.toObject(User::class.java)
                         user?.let {
                             binding.name.text = it.name
-                            binding.bio.text = "feeling great"
+                            binding.bio.text = it.bio
                             if (!it.imageurl.isNullOrEmpty()) {
                                 Picasso.get().load(it.imageurl).into(binding.profileImage)
                             }
