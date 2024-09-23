@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
+import kotlin.random.Random
 
 class signUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -28,6 +29,15 @@ class signUp : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
 
     lateinit var user: User
+
+    private val randomBios = arrayOf(
+        "Living the dream!", "Feeling fantastic!", "Adventurer at heart",
+        "Coffee first, conquer the world later", "Tech geek by day, artist by night",
+        "Explorer of the unknown", "Chasing dreams one step at a time",
+        "Creator of my own destiny", "Lover of life and good vibes",
+        "Learning every day", "Always on the go", "Happiness is homemade",
+        "In pursuit of perfection", "Dream big, hustle harder"
+    )
 
     // Image picker launcher
     private val launcher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -54,6 +64,9 @@ class signUp : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         user = User()
+
+        // Assign random bio
+        user.bio = generateRandomBio()
 
         // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -160,6 +173,12 @@ class signUp : AppCompatActivity() {
         }
     }
 
+    // Function to generate random bio
+    private fun generateRandomBio(): String {
+        val index = Random.nextInt(randomBios.size)
+        return randomBios[index]
+    }
+
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
@@ -171,6 +190,7 @@ class signUp : AppCompatActivity() {
                         name = firebaseUser?.displayName ?: ""
                         email = firebaseUser?.email ?: ""
                         imageurl = firebaseUser?.photoUrl.toString()
+                        bio = generateRandomBio()  // Assign random bio for Google sign-in
                     }
 
                     FirebaseFirestore.getInstance().collection(USER_NODE)

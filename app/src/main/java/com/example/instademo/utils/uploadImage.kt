@@ -15,7 +15,7 @@ fun uploadImage(uri: Uri, folderName: String,callback:(String?)->Unit){
         .addOnSuccessListener {
             it.storage.downloadUrl.addOnSuccessListener {
                 ImageUrl = it.toString()
-                    // Log.d("TAG", "uploadImage: $ImageUrl")
+
                 callback(ImageUrl!!)
 
             }
