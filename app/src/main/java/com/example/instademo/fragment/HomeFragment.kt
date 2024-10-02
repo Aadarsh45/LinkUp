@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instademo.Aboutus
+import com.example.instademo.PhotoDuelActivity
 import com.example.instademo.R
 import com.example.instademo.adapter.FollowRvAdapter
 import com.example.instademo.adapter.PostAdapter
+import com.example.instademo.adapter.PostDuelAdapter
 import com.example.instademo.databinding.FragmentHomeBinding
 import com.example.instademo.model.Post
 import com.example.instademo.model.User
@@ -25,13 +27,18 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
+
+import com.example.instademo.model.PhotoDuel
+
+
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val postList = ArrayList<Post>()
+    private val duelList = ArrayList<PhotoDuel>() // List for duels
     private lateinit var postAdapter: PostAdapter
-    private val followList = ArrayList<User>()
-    private lateinit var followRvAdapter: FollowRvAdapter
+    private lateinit var duelAdapter: PostDuelAdapter // Adapter for duels
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.option_menu, menu)
@@ -49,78 +56,77 @@ class HomeFragment : Fragment() {
                 // Handle chat item click
                 true
             }
+            R.id.chat -> {
+                // Handle chat item click
+                val intent = Intent(requireContext(), PhotoDuelActivity::class.java)
+                startActivity(intent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+
+        firestore = FirebaseFirestore.getInstance()
 
         // Initialize RecyclerView for posts
         postAdapter = PostAdapter(requireContext(), postList)
         binding.rv9.layoutManager = LinearLayoutManager(requireContext())
         binding.rv9.adapter = postAdapter
 
+        // Initialize RecyclerView for duels
+        duelAdapter = PostDuelAdapter(requireContext(), duelList)
+        binding.duelRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.duelRv.adapter = duelAdapter
 
         // Initialize RecyclerView for follows
-        followRvAdapter = FollowRvAdapter(requireContext(), followList)
+        val followList = ArrayList<User>()
+        val followRvAdapter = FollowRvAdapter(requireContext(), followList)
         binding.followRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.followRv.adapter = followRvAdapter
 
         // Set Toolbar
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.materialToolbar12)
 
-        FirebaseFirestore.getInstance().collection(USER_NODE).document(com.google.firebase.Firebase.auth.currentUser!!.uid).get()
-            .addOnCompleteListener{
-                val user:User=it.result.toObject(User::class.java)!!
-
-                if(!user.imageurl.isNullOrEmpty()){
-                    Picasso.get().load(user.imageurl).into(binding.userImage)
-                }
-            }
-
-        // Fetch follows and posts
-        fetchFollows()
-        fetchPosts()
-
-        return binding.root
-    }
-
-    private fun fetchFollows() {
+        // Load current user's profile image
         val currentUser = Firebase.auth.currentUser
         if (currentUser != null) {
-            // Fetch the user's profile image URL
-            Firebase.firestore.collection("users").document(currentUser.uid).get()
+            firestore.collection(USER_NODE).document(currentUser.uid).get()
                 .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        val user = document.toObject<User>()
-                        val profileImageUrl = user?.imageurl
-                        if (!profileImageUrl.isNullOrEmpty()) {
-                            // Load the profile image using Picasso
-                            Picasso.get().load(profileImageUrl).into(binding.userImage)
-                        }
+                    val user = document.toObject(User::class.java)
+                    if (user != null && !user.imageurl.isNullOrEmpty()) {
+                        Picasso.get().load(user.imageurl).into(binding.userImage)
                     }
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(requireContext(), "Error fetching user data: ${exception.message}", Toast.LENGTH_SHORT).show()
                 }
+        }
 
-            // Fetch follows
-            Firebase.firestore.collection(currentUser.uid + FOLLOW).get()
+        // Fetch follows, duels, and posts
+        fetchFollows(currentUser, followList, followRvAdapter)
+        fetchDuels()
+        fetchPosts()
+
+        return binding.root
+    }
+
+    private fun fetchFollows(currentUser: com.google.firebase.auth.FirebaseUser?, followList: ArrayList<User>, adapter: FollowRvAdapter) {
+        if (currentUser != null) {
+            firestore.collection("${currentUser.uid}$FOLLOW").get()
                 .addOnSuccessListener { documents ->
                     followList.clear()
-                    val tempList = ArrayList<User>()
-                    for (document in documents.documents) {
-                        val user = document.toObject<User>()!!
-
-                        tempList.add(user)
+                    for (document in documents) {
+                        val user = document.toObject(User::class.java)
+                        followList.add(user)
                     }
-                    followList.addAll(tempList)
-                    followRvAdapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(requireContext(), "Error fetching follows: ${exception.message}", Toast.LENGTH_SHORT).show()
@@ -130,17 +136,61 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun fetchDuels() {
+        firestore.collection("photo_duels")
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    Toast.makeText(requireContext(), "Error fetching duels", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
+
+                duelList.clear()
+                for (document in snapshots!!) {
+                    val duel = document.toObject(PhotoDuel::class.java)
+                    duel.id = document.id // Assign document ID
+                    duelList.add(duel)
+                }
+                duelAdapter.notifyDataSetChanged()
+                binding.duelRv.visibility = if (duelList.isNotEmpty()) View.VISIBLE else View.GONE
+
+                // Check and declare winners for ended duels
+                for (duel in duelList) {
+                    if (duel.endTime <= System.currentTimeMillis() && duel.winner == null) {
+                        declareWinner(duel)
+                    }
+                }
+            }
+    }
+
+    private fun declareWinner(duel: PhotoDuel) {
+        val duelRef = firestore.collection("photo_duels").document(duel.id)
+
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(duelRef)
+            val votes1 = snapshot.getLong("votesImage1") ?: 0
+            val votes2 = snapshot.getLong("votesImage2") ?: 0
+            val winner = when {
+                votes1 > votes2 -> "image1"
+                votes2 > votes1 -> "image2"
+                else -> "draw"
+            }
+            transaction.update(duelRef, "winner", winner)
+        }.addOnSuccessListener {
+            Toast.makeText(requireContext(), "Winner declared for duel ${duel.id}", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(), "Error declaring winner: ${it.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun fetchPosts() {
         val currentTime = System.currentTimeMillis()
 
-        Firebase.firestore.collection(POST)
+        firestore.collection(POST)
             .get()
             .addOnSuccessListener { documents ->
                 postList.clear()
                 for (document in documents) {
-                    val post = document.toObject<Post>()
-
+                    val post = document.toObject(Post::class.java)
                     // Check if the post is scheduled for a future time
                     if (post.scheduledTime == null || post.scheduledTime!! <= currentTime) {
                         postList.add(post)
@@ -153,6 +203,8 @@ class HomeFragment : Fragment() {
             }
     }
 
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clean up listeners if necessary
+    }
 }

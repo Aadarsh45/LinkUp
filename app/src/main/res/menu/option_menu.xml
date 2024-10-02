@@ -13,6 +13,11 @@
         android:icon="@drawable/ic_chat"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/photo_duel"
+        android:title="Duel"
+        android:icon="@drawable/ic_duel"
+        app:showAsAction="always" />
 
 
 </menu>
