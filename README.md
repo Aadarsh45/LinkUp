@@ -58,7 +58,7 @@ Here are some screenshots of the **LinkUp** app:
 
 | |   |  |
 |:------------:|:----------------:|:------------:|
-| ![Schedule Post](./pic4.png) | ![Reel](./Screenshot_20240907_015104.png) | ![Delete And Share Post](./pic6.png) |
+| ![Schedule Post](./pic3.png) | ![Reel](./Screenshot_20240907_015104.png) | ![Delete And Share Post](./pic6.png) |
 
 ## Installation
 
