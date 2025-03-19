@@ -1,3 +1,7 @@
+Here’s the updated version of the **LinkUp README** with the Photo Duel feature included while maintaining the structure:
+
+---
+
 # LinkUp
 
 ## Table of Contents
@@ -8,13 +12,14 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Firebase Integration](#firebase-integration)
+- [Photo Duel Feature](#photo-duel-feature)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
 
 ## Introduction
 
-**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, and explore short video reels. With a responsive and intuitive user interface, LinkUp ensures smooth social engagement.
+**LinkUp** is a modern and interactive mobile application built in Kotlin, integrated with Firebase for real-time data management and storage. The app allows users to share photos, interact with posts, manage their profiles, explore short video reels, and participate in engaging **Photo Duels**. With a responsive and intuitive user interface, LinkUp ensures smooth social engagement.
 
 ## Features
 
@@ -29,6 +34,9 @@
 
 - ❤️ **Likes & Comments**  
   Users can like posts and leave comments, updated in real time.
+
+- ⚔️ **Photo Duel**  
+  Users can create photo duels where others vote on their preferred image. The winner is automatically declared after the voting period ends.
 
 - 👤 **User Profiles**  
   Users can create and edit their profiles, including changing profile pictures and updating bios.
@@ -54,7 +62,7 @@ Here are some screenshots of the **LinkUp** app:
 
 |    |  |  |
 |:---------:|:--------------:|:-------------:|
-| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Follow List](./pic4.png) |
+| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Follow List](./pic4.png) |![Delete And Share Post](./photo-duel-layout.png)
 
 | |   |  |
 |:------------:|:----------------:|:------------:|
@@ -89,7 +97,9 @@ Instructions for using the app:
 4. View posts in full-screen mode by tapping on the post image.
 5. Share posts with others or delete your own posts.
 6. Explore the reel feature for short video content.
-7. Edit your profile, follow other users, and customize your feed.
+7. Participate in **Photo Duels** by voting for your preferred images.
+8. Create your own duels and let the community decide the winner.
+9. Edit your profile, follow other users, and customize your feed.
 
 ## Firebase Integration
 
@@ -110,8 +120,10 @@ fun loginUser(email: String, password: String) {
         }
 }
 ```
-### Firebase Firestore Setup
-```
+
+### **Firebase Firestore Setup**
+
+```kotlin
 // Firestore Database for Storing Posts
 val db = FirebaseFirestore.getInstance()
 
@@ -125,10 +137,11 @@ fun addPost(post: Post) {
             Log.w("Firestore", "Error adding post", e)
         }
 }
+```
 
-```
-### Firebase Storage for Image Upload
-```
+### **Firebase Storage for Image Upload**
+
+```kotlin
 // Uploading Image to Firebase Storage
 val storageRef = FirebaseStorage.getInstance().reference.child("posts/${UUID.randomUUID()}.jpg")
 
@@ -141,10 +154,44 @@ fun uploadImage(fileUri: Uri) {
             Log.w("Storage", "Image upload failed", e)
         }
 }
-
 ```
 
+## Photo Duel Feature
 
+### **Overview**
+The **Photo Duel** feature is a gamified comparison tool that allows users to post two images side-by-side and let others vote on which one they prefer. The feature includes real-time vote updates and automatic winner declaration after the voting period.
+
+### **Core Functionality**
+- Create duels by selecting two images, adding captions, and setting a time limit.
+- Allow other users to vote for either image.
+- Automatically declare a winner when the time limit expires.
+- Duels are displayed in a horizontally scrolling list at the top of the home feed.
+
+### **Data Flow**
+1. **Creating a Duel**  
+    - User selects two images from the gallery.
+    - Adds captions and sets a time limit.
+    - Images are uploaded to Firebase Storage.
+    - Duel data (image URLs, captions, time limit) is saved in Firestore.
+
+2. **Displaying Duels**  
+    - HomeFragment fetches duels from Firestore.
+    - Duels are displayed using a horizontally scrolling RecyclerView.
+    - Ended duels display the winner and disable voting.
+
+3. **Voting Process**  
+    - Users vote by clicking on either image.
+    - Vote count is incremented via a Firestore transaction.
+    - UI updates to reflect new vote count.
+
+4. **Winner Declaration**  
+    - System checks if the duel has ended.
+    - Compares vote counts and declares a winner.
+    - UI displays the winner and voting is disabled.
+
+### **Security & Moderation**
+- A **"Do not compare humans"** warning is displayed to discourage harmful comparisons.
+- Firebase rules ensure only valid duels are processed.
 
 ## Contributing
 
@@ -181,3 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 For any questions or suggestions, feel free to reach out at [aadarshchaurasia45@gmail.com](mailto:aadarshchaurasia45@gmail.com).
+
+---
+
+✅ The **Photo Duel** section is added with all relevant details while maintaining the structure. Let me know if you want to refine any part! 🚀
