@@ -1,6 +1,3 @@
-Here’s the updated version of the **LinkUp README** with the Photo Duel feature included while maintaining the structure:
-
----
 
 # LinkUp
 
@@ -60,9 +57,12 @@ Here’s the updated version of the **LinkUp README** with the Photo Duel featur
 
 Here are some screenshots of the **LinkUp** app:
 
-|    |  |  |
-|:---------:|:--------------:|:-------------:|
-| ![Home Feed](./pic1.png) | ![Search](./pic2.png) | ![Follow List](./pic4.png) |![Delete And Share Post](./photo-duel-layout.png)
+|  Home Feed  |    Search    |  Follow List  |    Photo Duel    |
+|:-----------:|:------------:|:-------------:|:----------------:|
+| <img src="./pic1.png" alt="Home Feed" width="250" height="250"> | <img src="./pic2.png" alt="Search" width="250" height="250"> | <img src="./pic4.png" alt="Follow List" width="250" height="250"> | <img src="./photo-duel-layout.svg" alt="Photo Duel" width="250" height="250"> |
+
+
+
 
 | |   |  |
 |:------------:|:----------------:|:------------:|
@@ -229,6 +229,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any questions or suggestions, feel free to reach out at [aadarshchaurasia45@gmail.com](mailto:aadarshchaurasia45@gmail.com).
 
----
 
-✅ The **Photo Duel** section is added with all relevant details while maintaining the structure. Let me know if you want to refine any part! 🚀
