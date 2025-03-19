@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Background -->
+  <rect width="900" height="600" fill="#f5f5f5"/>
+  
+  <!-- Left Panel: Creation Screen -->
+  <rect x="50" y="50" width="350" height="500" rx="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <text x="225" y="80" font-family="Arial" font-size="18" text-anchor="middle" fill="#333333">Create Photo Duel</text>
+  
+  <!-- Warning Text -->
+  <text x="225" y="110" font-family="Arial" font-size="14" text-anchor="middle" fill="#ff0000">Do not compare humans</text>
+  
+  <!-- Image 1 Section -->
+  <rect x="80" y="130" width="290" height="120" rx="5" fill="#e0e0e0"/>
+  <text x="225" y="195" font-family="Arial" font-size="14" text-anchor="middle" fill="#777777">Tap to select Image 1</text>
+  
+  <!-- Caption 1 Field -->
+  <rect x="80" y="260" width="290" height="40" rx="5" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  <text x="100" y="285" font-family="Arial" font-size="14" fill="#999999">Add Caption for Image 1</text>
+  
+  <!-- Image 2 Section -->
+  <rect x="80" y="310" width="290" height="120" rx="5" fill="#e0e0e0"/>
+  <text x="225" y="375" font-family="Arial" font-size="14" text-anchor="middle" fill="#777777">Tap to select Image 2</text>
+  
+  <!-- Caption 2 Field -->
+  <rect x="80" y="440" width="290" height="40" rx="5" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  <text x="100" y="465" font-family="Arial" font-size="14" fill="#999999">Add Caption for Image 2</text>
+  
+  <!-- Time Limit Field -->
+  <rect x="80" y="490" width="290" height="40" rx="5" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  <text x="100" y="515" font-family="Arial" font-size="14" fill="#999999">Time limit (minutes)</text>
+  
+  <!-- Post Button -->
+  <rect x="150" y="540" width="150" height="40" rx="20" fill="#4285f4"/>
+  <text x="225" y="565" font-family="Arial" font-size="14" text-anchor="middle" fill="#ffffff">Post Duel</text>
+  
+  <!-- Right Panel: Feed Display -->
+  <rect x="500" y="50" width="350" height="500" rx="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <text x="675" y="80" font-family="Arial" font-size="18" text-anchor="middle" fill="#333333">Photo Duel in Feed</text>
+  
+  <!-- Duel Display -->
+  <rect x="530" y="100" width="290" height="430" rx="5" fill="#f9f9f9"/>
+  
+  <!-- Image 1 in Feed -->
+  <rect x="550" y="120" width="120" height="100" rx="5" fill="#e0e0e0"/>
+  <text x="580" y="140" font-family="Arial" font-size="12" fill="#333333">Caption 1</text>
+  <text x="580" y="230" font-family="Arial" font-size="12" fill="#333333">Votes: 42</text>
+  <rect x="550" y="240" width="120" height="30" rx="15" fill="#4285f4"/>
+  <text x="610" y="260" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">Vote</text>
+  
+  <!-- VS Symbol -->
+  <text x="675" y="170" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#ff5722">VS</text>
+  
+  <!-- Image 2 in Feed -->
+  <rect x="680" y="120" width="120" height="100" rx="5" fill="#e0e0e0"/>
+  <text x="710" y="140" font-family="Arial" font-size="12" fill="#333333">Caption 2</text>
+  <text x="710" y="230" font-family="Arial" font-size="12" fill="#333333">Votes: 38</text>
+  <rect x="680" y="240" width="120" height="30" rx="15" fill="#4285f4"/>
+  <text x="740" y="260" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">Vote</text>
+  
+  <!-- Timer -->
+  <text x="675" y="300" font-family="Arial" font-size="14" text-anchor="middle" fill="#ff5722">Time Remaining: 12:34</text>
+  
+  <!-- Winner Declaration (For Ended Duels) -->
+  <rect x="550" y="330" width="250" height="60" rx="5" fill="#f0f0f0" stroke="#cccccc" stroke-width="1"/>
+  <text x="675" y="365" font-family="Arial" font-size="16" text-anchor="middle" fill="#4caf50">Winner: Image 1</text>
+  
+  <!-- Other Duels (Scrollable) -->
+  <rect x="550" y="410" width="60" height="60" rx="5" fill="#e0e0e0"/>
+  <rect x="620" y="410" width="60" height="60" rx="5" fill="#e0e0e0"/>
+  <rect x="690" y="410" width="60" height="60" rx="5" fill="#e0e0e0"/>
+  <rect x="760" y="410" width="60" height="60" rx="5" fill="#e0e0e0"/>
+  <text x="675" y="490" font-family="Arial" font-size="12" text-anchor="middle" fill="#777777">More Duels</text>
+</svg>
